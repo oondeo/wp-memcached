@@ -169,7 +169,7 @@ class WP_Object_Cache
             $expire = $this->default_expiration;
         }
 
-        $result = $mc->add($key, $data, false, $expire);
+        $result = $mc->add($key, $data,  $expire);
 
         if (false !== $result) {
             ++$this->stats['add'];
@@ -231,7 +231,7 @@ class WP_Object_Cache
     function close()
     {
         foreach ($this->mc as $bucket => $mc) {
-            $mc->close();
+            $mc->quit();
         }
     }
 
@@ -436,7 +436,7 @@ class WP_Object_Cache
             $data = clone $data;
         }
 
-        $result = $mc->replace($key, $data, false, $expire);
+        $result = $mc->replace($key, $data, $expire);
 
         if (false !== $result) {
             $this->cache[$key] = $data;
@@ -469,7 +469,7 @@ class WP_Object_Cache
         }
 
         $mc =& $this->get_mc($group);
-        $result = $mc->set($key, $data, false, $expire);
+        $result = $mc->set($key, $data, $expire);
 
         ++$this->stats['set'];
         $this->group_ops[$group][] = "set $id";
@@ -610,7 +610,7 @@ class WP_Object_Cache
                     }
                 }
 
-                $this->mc[$bucket]->addServer($node, $port, true, 1, 1, 15, true, array($this, 'failure_callback'));
+                $this->mc[$bucket]->addServer($node, $port, 1);
 //				$this->mc[ $bucket ]->setCompressThreshold( 20000, 0.2 );
             }
         }
